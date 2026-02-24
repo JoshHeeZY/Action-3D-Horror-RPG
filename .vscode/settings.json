@@ -66,5 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "Action 3D Horror RPG.sln"
+    "dotnet.defaultSolution": "Action 3D Horror RPG.slnx"
 }
