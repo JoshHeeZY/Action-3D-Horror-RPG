@@ -12,6 +12,10 @@ public class Player : MonoBehaviour
     public float minLookX;          // Lowest downward rotation
     private float rotX;             // Current X rotation of the camera
 
+    [Header("Stats")]
+    public int CurrentHP = 100;
+    public int MaxHP = 100;
+
     private Camera cam;
     private Rigidbody rig;
     private Weapon weapon;
@@ -73,5 +77,27 @@ public class Player : MonoBehaviour
         {
             rig.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        CurrentHP -= damage;
+        if (CurrentHP <= 0)
+            Die();
+    }
+
+    void Die()
+    {
+        // Add death logic later
+    }
+
+    public void GiveHealth(int amountToGive)
+    {
+        CurrentHP = Mathf.Clamp(CurrentHP + amountToGive, 0, MaxHP);
+    }
+
+    public void GiveAmmo(int amountToGive)
+    {
+        weapon.currentAmmo = Mathf.Clamp(weapon.currentAmmo + amountToGive, 0, weapon.maxAmmo);
     }
 }
