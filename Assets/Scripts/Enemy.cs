@@ -47,17 +47,35 @@ public class Enemy : MonoBehaviour
             agent.SetDestination(target.transform.position);
         }
 
-        RotateTowardsTarget(); // NEW: ensure enemy always looks at player
+        RotateTowardsTarget();
     }
 
     void RotateTowardsTarget()
     {
+        if (target == null) return;
+
         Vector3 dir = (target.transform.position - transform.position).normalized;
-        dir.y = 0f; // prevent tilting up/down
+        dir.y = 0f;
+
         if (dir != Vector3.zero)
         {
             Quaternion lookRotation = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        CurrentHP -= damage;
+
+        if (CurrentHP <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        gameObject.SetActive(false);
     }
 }

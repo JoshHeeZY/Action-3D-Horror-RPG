@@ -28,7 +28,7 @@ public class Weapon : MonoBehaviour
     {
         if (Time.time - lastShootTime >= shootRate)
         {
-            if (currentAmmo > 0 || infiniteAmmo == true)
+            if (currentAmmo > 0 || infiniteAmmo)
             {
                 return true;
             }
@@ -40,14 +40,34 @@ public class Weapon : MonoBehaviour
     public void Shoot()
     {
         lastShootTime = Time.time;
-        currentAmmo -= 1;
+
+        if (!infiniteAmmo)
+        {
+            currentAmmo -= 1;
+        }
 
         GameObject bullet = bulletPool.GetObject();
+        if (bullet == null) return;
 
-                // Reposition and rotate the pooled bullet
-        bullet.transform.position = muzzle.position;
+        // Make sure pooled bullet is active
+        bullet.SetActive(true);
+
+        // Spawn slightly in front of muzzle so it doesn't instantly hit shooter
+        bullet.transform.position = muzzle.position + (muzzle.forward * 0.5f);
         bullet.transform.rotation = muzzle.rotation;
 
-        bullet.GetComponent<Rigidbody>().linearVelocity = muzzle.forward * bulletSpeed;
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.linearVelocity = muzzle.forward * bulletSpeed;
+        }
+
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        if (bulletScript != null)
+        {
+            bulletScript.SetOwner(isPlayer);
+        }
     }
 }
